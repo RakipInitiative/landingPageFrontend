@@ -1006,7 +1006,7 @@
         navBar.innerHTML += `<div id="searchBar">
           <div>
             <input id="filter-search" class="form-control"  type="search" placeholder="Search" aria-label="Search">
-            <span id="clear" class="fa fa-times-circle"></span>
+            <span id="clear" class="glyphicon glyphicon-remove-circle"></span>
             <div id="numberModels"></div>
           </div>
         </div>`;
