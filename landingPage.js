@@ -4,24 +4,25 @@
       return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase())>=0;
     };
 
-    let _endpoint = "https://knime.bfr.berlin/backend/";//"http://localhost:8080/backend/";
+    let _endpoint = "http://localhost:8080/";//"https://knime.bfr.berlin/backend/";//
     let _globalVars = {
-       
+
         metadataEndpoint : _endpoint + "metadata",
         imageEndpoint : _endpoint + "image/",
         downloadEndpoint : _endpoint + "download/"
     }
-    
+
     // These sets are used with the th-filters
     let _softwareSet = new Set();
     let _environmentSet = new Set();
     let _hazardSet = new Set();
+    let _modelTypeSet = new Set();
 
     let _cache = [];
-    
+
     let _representation = {
         title1 : "Landing Page",
-        link1 : "https://knime.bfr.berlin/knime/", 
+        link1 : "https://knime.bfr.berlin/knime/",
         linkName1 : "Web Repository (authentication required)",
         mainColor: "rgb(55,96,146)",
         buttonColor: "rgb(83,121,166)",
@@ -34,7 +35,7 @@
   createUI();
     /**
    * Create a Bootstrap dropdown menu.
-   * @param {string} name Menu name 
+   * @param {string} name Menu name
    * @param {array} submenus Array of hashes of id and name of the submenus.
    */
   function createSubMenu(name, submenus) {
@@ -53,8 +54,8 @@
    * Create a Bootstrap 3 panel for simple (non-nested) metadata. Good for
    * General information, study, etc. but not for lists like model parameters or
    * references.
-   * 
-   * @param {string} title Panel title 
+   *
+   * @param {string} title Panel title
    * @param {object} formData Information from UI schema for this metadata
    * @param {object} data Object with keys as the properties ids in formData and
    * values as the actual metadata values.
@@ -85,8 +86,8 @@
   /**
    * Create a Bootstrap 3 panel for complex (nested) metadata. Good for lists
    * like model parameters or references.
-   * 
-   * @param {string} title Panel title 
+   *
+   * @param {string} title Panel title
    * @param {object} formData Information from UI schema for this metadata
    * @param {object} data Object with keys as the properties ids in formData and
    * values as the actual metadata values.
@@ -135,7 +136,7 @@
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -162,7 +163,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.genericModel;
           return {
@@ -185,7 +186,7 @@
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
             exposure: createComplexPanel("Exposure", schema.exposure, metadata.modelMath.exposure),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
@@ -195,7 +196,7 @@
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -217,7 +218,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.dataModel;
           return {
@@ -235,18 +236,18 @@
             laboratory: createComplexPanel("Laboratory", schema.laboratory, metadata.dataBackground.laboratory),
             assay: createComplexPanel("Assay", schema.assay, metadata.dataBackground.assay),
             parameter: createComplexPanel("Parameter", schema.parameter, metadata.modelMath.parameter),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class PredictiveModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -266,7 +267,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.predictiveModel;
           return {
@@ -283,18 +284,18 @@
             assay: createComplexPanel("Assay", schema.assay, metadata.dataBackground.assay),
             modelMath: createSimplePanel("Model math", schema.modelMath, metadata.modelMath),
             parameter: createComplexPanel("Parameter", schema.parameter, metadata.modelMath.parameter),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class OtherModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -319,7 +320,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.otherModel;
           return {
@@ -340,18 +341,18 @@
             parameter: createComplexPanel("Parameter", schema.parameter, metadata.modelMath.parameter),
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class DoseResponseModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -376,7 +377,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.doseResponseModel;
           return {
@@ -397,18 +398,18 @@
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
             exposure: createComplexPanel("Exposure", schema.exposure, metadata.modelMath.exposure),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class ToxicologicalModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -433,7 +434,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.toxicologicalModel;
           return {
@@ -455,18 +456,18 @@
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
             exposure: createComplexPanel("Exposure", schema.exposure, metadata.modelMath.exposure),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class ExposureModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -493,7 +494,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.exposureModel;
           return {
@@ -516,18 +517,18 @@
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
             exposure: createComplexPanel("Exposure", schema.exposure, metadata.modelMath.exposure),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class ProcessModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -549,7 +550,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.processModel;
           return {
@@ -573,14 +574,14 @@
           };
         }
       }
-    
+
       class ConsumptionModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -603,7 +604,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.consumptionModel;
           return {
@@ -624,18 +625,18 @@
             parameter: createComplexPanel("Parameter", schema.parameter, metadata.modelMath.parameter),
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class HealthModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -660,7 +661,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.healthModel;
           return {
@@ -682,18 +683,18 @@
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
             exposure: createComplexPanel("Exposure", schema.exposure, metadata.modelMath.exposure),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class RiskModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -720,7 +721,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.riskModel;
           return {
@@ -743,18 +744,18 @@
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
             exposure: createComplexPanel("Exposure", schema.exposure, metadata.modelMath.exposure),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
-    
+
       class QraModel {
-    
+
         constructor(metadata, img) {
           this.menus = this._createMenus();
           this.panels = this._createPanels(metadata, img);
         }
-    
+
         _createMenus() {
           return createSubMenu("General information", [
             { "id": "generalInformation", "label": "General" },
@@ -781,7 +782,7 @@
                 aria-controls="plot" role="tab" data-toggle="tab">Model Plot</a>
             </li>`;
         }
-    
+
         _createPanels(metadata, img) {
           let schema = schemas.qraModel;
           return {
@@ -804,7 +805,7 @@
             qualityMeasures: createComplexPanel("Quality measures", schema.qualityMeasures, metadata.modelMath.qualityMeasures),
             modelEquation: createComplexPanel("Model equation", schema.modelEquation, metadata.modelMath.modelEquation),
             exposure: createComplexPanel("Exposure", schema.exposure, metadata.modelMath.exposure),
-            plot: createPlotPanel(img) 
+            plot: createPlotPanel(img)
           };
         }
       }
@@ -837,44 +838,53 @@
         }
       };
     async function createUI(){
-    
+
         createNavBar();
-    
+
         let body = document.getElementsByTagName("body")[0];
-    
+
         let container = document.createElement("div");
         container.className = "container-fluid";
-    
+
         let navBar = createNavBar();
         container.appendChild(navBar);
-    
+
         let descriptionParagraph = document.createElement("p");
         // TODO: add contents to description paragraph
         container.appendChild(descriptionParagraph);
-    
+
         let mainTable = document.createElement("div");
         mainTable.id = "MainTable";
         mainTable.innerHTML = `<table id="TableElement" class="sortable table table-sm table-responsive-xl">
         <thead>
+          <!--
           <th id="cleft">Check</th>
+          -->
           <th class="actives" id="col1" scope="col" data-sort="name">Model Name</th>
           <th class="actives hideColumn" id="col2" scope="col" data-sort="name">ModelID</th>
           <th class="actives" id="colS" data-sort="name">
             <span id="col3">Software</span><br/>
             <span><select id="soft" class="crit"><option selected="selected">Select</option></select>
-            <button id="clearSoft" title="reset" class="fa fa-remove"></button></span>
+            <button id="clearSoft" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colE" data-sort="name">
             <span id="col4">Environment</span><br/>
             <span><select id="env" class="crit"><option selected="selected">Select</option></select>
-            <button id="clearEnv" title="reset" class="fa fa-remove"></button></span>
+            <button id="clearEnv" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colH" data-sort="name">
             <span id="col5">Hazard</span><br/>
             <span>
               <select id="haz" class="crit"><option selected="selected">Select</option></select>
-              <button id="clearHaz" title="reset" class="fa fa-remove"></button>
+              <button id="clearHaz" title="reset" class="glyphicon glyphicon-remove"></button>
             </span>
+          </th>
+          <th class="actives" id="colT" data-sort="name">
+              <span id="col8">Type</span><br/>
+              <span>
+                <select id="type" class="crit"><option selected="selected">Select</option></select>
+                <button id="clearType" title="reset" class="glyphicon glyphicon-remove"></button>
+              </span>
           </th>
           <th class="actives" id="col6" scope="col" data-sort="name">Execution Time </th>
           <th class="actives" id="col7" scope="col" data-sort="name">Upload Date </th>
@@ -883,13 +893,13 @@
         <tbody id="rows"></tbody>
         </table></div>`;
         container.appendChild(mainTable);
-    
+
         // details dialog
         let modalDiv = document.createElement("div");
         modalDiv.classList.add("modal", "fade");
         modalDiv.setAttribute("tabindex", "-1");
         modalDiv.setAttribute("role", "dialog");
-    
+
         modalDiv.innerHTML = `
           <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -911,11 +921,11 @@
             </div> <!-- .modal-content -->
           </div> <!-- .modal-dialog -->`;
         container.appendChild(modalDiv);
-    
+
         body.appendChild(container);
-    
+
         await fillTable();
-    
+
          // Populate cache
       $(".table tbody tr").each(function() {
         let rawText = getText(this);
@@ -924,12 +934,12 @@
         // Add an object to the cache array
         _cache.push({ element: this, text: formattedText});
       });
-        
+
       // If browser does not support the input event, then use the keyup event
       let search = $("#filter-search"); // Get the input element
       search.on(search[0].oninput ? "input" : "keyup", filter);
 
-      
+
 
       // table head
       $("table.sortable thead th").css({
@@ -947,7 +957,7 @@
       $(".sidenav").css("background-color", _representation.mainColor);
 
       // Selects
-      $("#soft, #env, #haz").css("color", _representation.mainColor);
+      $("#soft, #env, #haz, #type").css("color", _representation.mainColor);
 
       // Buttons
       $(".topnav a.Nav").css("background-color", _representation.mainColor)
@@ -960,7 +970,7 @@
         "color": _representation.mainColor,
         "opacity": "0.5"
       });
-      $(".fa-remove").css("color", _representation.hoverColor);
+      $(".glyphicon-remove").css("color", _representation.hoverColor);
 
       // table head:hover
       $("th.actives.ascending, th.actives.descending, table.sortable th.actives").hover((mouse) => {
@@ -994,8 +1004,8 @@
       $("#MenuIcon").click(() => document.getElementById("mySidenav").style.width = "250px");
       $('.closebtn').click(() => document.getElementById("mySidenav").style.width = "0");
       }
-    
-    
+
+
       function createNavBar() {
         let navBar = document.createElement("div");
         navBar.id = "Navbar";
@@ -1014,8 +1024,8 @@
         return navBar
     }
 
-    
-    
+
+
 
     function createTopnav() {
         let title1 = _representation.title1; // TODO: get title1 from input
@@ -1035,7 +1045,7 @@
         menuLink.innerHTML = '<i style="font-size:26px;" class="material-icons">menu</i></a>';
         topnav.appendChild(menuLink);
         topnav.appendChild(createHardCodedLink(_representation.link1, _representation.linkName1));
-        
+
         return topnav;
     }
 
@@ -1049,7 +1059,7 @@
 
         // Add links
         sidenav.appendChild(createHardCodedLink(_representation.link1, _representation.linkName1));
-        
+
 
         return sidenav;
     }
@@ -1060,7 +1070,7 @@
         navlink.href = url; // url column
         navlink.target = "_blank";
         navlink.innerText = text; // text column
-  
+
 
         return navlink;
       }
@@ -1070,46 +1080,51 @@
       async function fillTable() {
 
         // These sets are used with the th-filters
-  
+
         // Load model information table from _representation
         //window.modelInformation = new kt();
         //window.modelInformation.setDataTable(_representation.basicModelInformation);
-  
+
         // Get full model metadata from _representation
         const metadata = await getMetadata();
         _representation.metadata = metadata;
         //let metadata = JSON.parse(metaPromise);
-  
-        
+
+
         for (let i=0; i < metadata.length; i++) {
           let modelMetadata = metadata[i];
           //let currentRow = window.modelInformation.getRows()[i];
-          
+
           // TODO: ...
            let modelName = getData(modelMetadata, "generalInformation", "name");
            let modelId = getData(modelMetadata, "generalInformation", "identifier");
            let software = getData(modelMetadata, "generalInformation", "software");
            let environment = getScopeData(modelMetadata, "scope", "product", "productName");
            let hazard = getScopeData(modelMetadata, "scope", "hazard", "hazardName");
+           let modelType = modelMetadata["modelType"];
            let durationTime = convertKnimeTimeToISO("1d 1h 30m 3s");
            let uploadTime = "uploadTime";
            let url = _globalVars.downloadEndpoint + i.toString();
-        
+
           // Update sets
           if (software) _softwareSet.add(software);
           if (environment) environment.forEach(x => {_environmentSet.add(x)});//_environmentSet.add(environment);
           if (hazard) hazard.forEach(x => {_hazardSet.add(x)});//add(hazard);
+          if (modelType) _modelTypeSet.add(modelType);
           //addUniformElements(environment.split(/[,|]/), _environmentSet);
           //addUniformElements(hazard.split("|"), _hazardSet);
-  
+
           // Add row to table
           $("#rows").append(`<tr id="${i}">
+            <!--
             <td><input type="checkbox" class="checkbox1" name="${i}"></td>
+            -->
             <td>${modelName}</td>
             <td class="hideColumn">${modelId}</td>
             <td class="softCol columnS">${software}</td>
             <td class="envCol columnS">${Array.from(environment).join(' ')}</td>
             <td class="hazCol columnS">${Array.from(hazard).join(' ')}</td>
+            <td class="typeCol columnS">${modelType}</td>
             <td>${durationTime}</td>
             <td>${uploadTime}</td>
             <td>
@@ -1118,114 +1133,110 @@
               <br>
               <br>
               ${url ? `<a class="btn btn-primary downloadButton" href="${url}" download>Download</a>` : ""}
-              
+
               <div id="wrapper${i}"></div>
             </td>
           </tr>`);
-  
+
           $("#opener" + i).click((event) => buildDialogWindow(event));
           //$("#downloader" + i).click((event) => downloadFile(event))
         }
-  
+
         populateSelectById("soft", _softwareSet);
         populateSelectById("env", _environmentSet);
         populateSelectById("haz", _hazardSet);
-  
+        populateSelectById("type", _modelTypeSet)
+
         $(document).ready(function() {
-          
+
           // Scrolling: detect a scroll event on the tbody
-          $('tbody').scroll((event) => { 
+          $('tbody').scroll((event) => {
             $('thead').css("left", -$("tbody").scrollLeft()); //fix the thead relative to the body scrolling
             $('thead th:nth-child(2)').css("left", $("tbody").scrollLeft()); //fix the first cell of the header
             $('tbody td:nth-child(2)').css("left", $("tbody").scrollLeft()); //fix the first column of tdbody
           });
-  
+
           // Filter by different software, environment & hazard values
-          $('#soft, #env, #haz').on('change', filterByCol);
-  
+          $('#soft, #env, #haz, #type').on('change', filterByCol);
+
           // Clear the search bar input
           $("#clear").click(() => {
             $('#rows tr').show();
             $("#filter-search").val("Search");
             $("#numberModels").fadeOut();
-  
+
             // Clear selects
             let softwareSelect = document.getElementById("soft");
-            softwareSelect.options.length = 1;
+            //softwareSelect.options.length = 1;
             softwareSelect.value = "Select";
-  
+
             let environmentSelect = document.getElementById("env");
-            environmentSelect.options.length = 1;
+            //environmentSelect.options.length = 1;
             environmentSelect.value = "Select";
-  
+
             let hazardSelect = document.getElementById("haz");
-            hazardSelect.options.length = 1;
+            //hazardSelect.options.length = 1;
             hazardSelect.value = "Select";
+
+            let modelTypeSelect = document.getElementById("type");
+            //modelTypeSelect.options.length = 1;
+            modelTypeSelect.value = "Select";
           });
-  
+
           // Clear the selects of the different filters on button press
           $("#clearSoft").click(() => {
             let softwareSelect = document.getElementById("soft");
-            softwareSelect.options.length = 1;
+            //softwareSelect.options.length = 1;
             softwareSelect.value = "Select";
-  
-            filterByCol();  
+
+            filterByCol();
           });
-  
+
           $("#clearEnv").click(() => {
             let environmentSelect = document.getElementById("env");
-            environmentSelect.options.length = 1;
+            //environmentSelect.options.length = 1;
             environmentSelect.value = "Select";
-  
+
             filterByCol();
           });
-  
+
           $("#clearHaz").click(() => {
             let hazardSelect = document.getElementById("haz");
-            hazardSelect.options.length = 1;
+            //hazardSelect.options.length = 1;
             hazardSelect.value = "Select";
-  
+
             filterByCol();
           });
-  
+           $("#clearType").click(() => {
+            let modelTypeSelect = document.getElementById("type");
+            //modelTypeSelect.options.length = 1;
+            modelTypeSelect.value = "Select";
+
+            filterByCol();
+            });
           // Sort columns
           $("#col1").click(() => sortColumn("#col1", 1));
           $("#col2").click(() => sortColumn("#col2", 2));
           $("#col3").click(() => sortColumn("#col3", 3));
           $("#col4").click(() => sortColumn("#col4", 4));
           $("#col5").click(() => sortSpan("#col5", 5));
+          $("#col8").click(() => sortColumn("#col8", 8));
           $("#col6").click(() => sortColumn("#col6", 6));
           $("#col7").click(() => sortColumn("#col7", 7));
-  
-          // Handle model selection. Only one row (model) can be selected and the
-          // view value is updated with the current selection
-          let selectedBox = null;
-          $('.checkbox1').click(function() {
-            selectedBox = this.name;
-            $('.checkbox1').each(function() {
-              if (this.name == selectedBox) {
-                this.checked = true;
-                $(this).closest("tr").css("background-color", "#e1e3e8");
-              } else {
-                this.checked = false;
-                $(this).closest("tr").css("background-color", "transparent");
-              };
-            });
-            
-            // save selected model
-            _value.selectedModel = window.modelInformation.getRows()[selectedBox].rowKey;
-          });
+
+
         });
       }
 
 
       /**
      * Populate the options of a select.
-     * 
+     *
      * @param {element} select DOM element
      * @param {array} options Array of possible values
      */
     function populateSelect(select, options) {
+        //select.innerHTML = `<option value="Select">Select</option>`;
         options.forEach(entry =>
           select.innerHTML += `<option value="${entry}">${entry}</option>`);
       }
@@ -1239,11 +1250,12 @@
         let select1 = $("#soft").val();
         let select2 = $("#env").val();
         let select3 = $("#haz").val();
+        let select4 = $("#type").val();
         rows.hide();
-  
+
         let numberModelsDiv = document.getElementById("numberModels");
-  
-        if (select1 == "Select" && select2 == "Select" && select3 == "Select") {
+
+        if (select1 == "Select" && select2 == "Select" && select3 == "Select" && select4 == "Select") {
           rows.show();
           numberModelsDiv.innerHTML = `Your search return ${rows.length} models`;
         } else if (select2 == "Select"){
@@ -1275,55 +1287,62 @@
             var selRows=rows.filter(filt1);
             filt = selRows.filter($(`#MainTable td.envCol:contains("${select2}")`).parent().show());
             rows.hide();
-          } else{
-            filt=""
-          }	
+         } else{
+            filt="";
+          }
         } else {
-          filt = `:contains("${select1}"):contains("${select2}"):contains("${select3}")`;
+          filt = `:contains("${select1}"):contains("${select2}"):contains("${select3}"):contains("${select4}"`;
         }
-  
+
         rows.filter(filt).show();
         let searchResult = rows.filter(filt);
         numberModelsDiv.innerHTML = `Your search returned ${searchResult.length} models`;
-        
+
         // Get new sets for the filtered rows
         let softwareSet = new Set();
         let environmentSet = new Set();
         let hazardSet = new Set();
-  
+        let modelTypeSet = new Set();
+
         for (let i = 0; i < searchResult.length; i++) {
-          let software = searchResult[i].getElementsByTagName("td")[3].innerText;
-              let environment = searchResult[i].getElementsByTagName("td")[4].innerText;
-          let hazard = searchResult[i].getElementsByTagName("td")[5].innerText;
-          
+          let software = searchResult[i].getElementsByTagName("td")[2].innerText;
+          let environment = searchResult[i].getElementsByTagName("td")[3].innerText;
+          let hazard = searchResult[i].getElementsByTagName("td")[4].innerText;
+          let modelType = searchResult[i].getElementsByTagName("td")[5].innerText;
+
           // Split some entries joined with commas
           addUniformElements(software.split(/[,|]/), softwareSet);
           addUniformElements(environment.split(/[,|]/), environmentSet);
           addUniformElements(hazard.split(/[,|]/), hazardSet);
+          addUniformElements(modelType.split(/[,|]/), modelTypeSet);
         }
-  
+
         // Clear filters and populated them with the filtered results
         let softwareSelect = document.getElementById("soft");
-        softwareSelect.options.length = 1;
+        //softwareSelect.options.length = 1;
         populateSelect(softwareSelect, softwareSet);
         softwareSelect.value = select1;
-  
+
         let environmentSelect = document.getElementById("env");
-        environmentSelect.options.length = 1;
+        //environmentSelect.options.length = 1;
         populateSelect(environmentSelect, environmentSet);
         environmentSelect.value = select2;
-  
+
         let hazardSelect = document.getElementById("haz");
-        hazardSelect.options.length = 1;
+        //hazardSelect.options.length = 1;
         populateSelect(hazardSelect, hazardSet);
         hazardSelect.value = select3;
-  
+
+        let modelTypeSelect = document.getElementById("type");
+        //modelTypeSelect.options.length = 1;
+        populateSelect(modelTypeSelect, modelTypeSet);
+        modelTypeSelect.value = select4;
         // If no filters, restore the selects and numberModelsDiv
         if (filt == "") {
           populateSelect(softwareSelect, _softwareSet);
           populateSelect(environmentSelect, _environmentSet);
           populateSelect(hazardSelect, _hazardSet);
-  
+          populateSelect(modelTypeSelect, _modelTypeSet);
           numberModelsDiv.innerHTML = " ";
         }
       }
