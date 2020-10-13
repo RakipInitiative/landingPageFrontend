@@ -9,7 +9,9 @@
 
         metadataEndpoint : _endpoint + "metadata",
         imageEndpoint : _endpoint + "image/",
-        downloadEndpoint : _endpoint + "download/"
+        downloadEndpoint : _endpoint + "download/",
+        uploadDateEndpoint: _endpoint + "uploadDate/",
+        executionTimeEndpoint: _endpoint + "executionTime/"
     }
 
     // These sets are used with the th-filters
@@ -1088,11 +1090,15 @@
         // Get full model metadata from _representation
         const metadata = await getMetadata();
         _representation.metadata = metadata;
+
+        const uploadDates = await getUploadDate();
+        const executionTimes = await getExecutionTime();
         //let metadata = JSON.parse(metaPromise);
 
 
         for (let i=0; i < metadata.length; i++) {
           let modelMetadata = metadata[i];
+
           //let currentRow = window.modelInformation.getRows()[i];
 
           // TODO: ...
@@ -1102,8 +1108,8 @@
            let environment = getScopeData(modelMetadata, "scope", "product", "productName");
            let hazard = getScopeData(modelMetadata, "scope", "hazard", "hazardName");
            let modelType = modelMetadata["modelType"];
-           let durationTime = convertKnimeTimeToISO("1d 1h 30m 3s");
-           let uploadTime = "uploadTime";
+           let durationTime = await executionTimes[i];
+           let uploadTime = await uploadDates[i];
            let url = _globalVars.downloadEndpoint + i.toString();
 
           // Update sets
@@ -1640,11 +1646,25 @@
         // });
         return j;
     }
-    
-  
-    
-    //something();
-    
+    async function getUploadDate(){
+        let date = [];
+        metadata = _representation.metadata;
+        for (let i=0; i < metadata.length; i++) {
+            const resp = await fetch(_globalVars.uploadDateEndpoint + i);
+            date.push(resp.text())
+        }
+        return date;
+    }
+
+    async function getExecutionTime(){
+        let times = [];
+        metadata = _representation.metadata;
+        for (let i=0; i < metadata.length; i++) {
+            const resp = await fetch(_globalVars.executionTimeEndpoint + i);
+            times.push(resp.text())
+        }
+        return times;
+    }
 
 
     
