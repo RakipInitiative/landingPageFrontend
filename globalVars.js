@@ -6,7 +6,8 @@ let _globalVars = {
     downloadEndpoint: _endpoint + "download/",
     uploadDateEndpoint: _endpoint + "uploadDate/",
     executionTimeEndpoint: _endpoint + "executionTime/",
-    simulationsEndpoint: _endpoint + "simulations/"
+    simulationsEndpoint: _endpoint + "simulations/",
+    executionEndpoint: _endpoint + "execute/"
 }
 // Regexp to match SId from SBML
 var _idRegexp = /^[A-Za-z_^s]\w*$/;

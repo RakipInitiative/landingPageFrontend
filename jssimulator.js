@@ -66,8 +66,11 @@ async function buildSimulatorWindow(event) {
 
 
     // remove tab panels from view:
-    let viewTab = document.getElementById("viewTab");
-    viewTab.innerHTML = "";
+    let viewTab = document.getElementById("viewTab"); // "<div class='loader'></div>";
+    let runButton =  `<button type="button" class="btn btn-primary executeButton" id="run${modelNumber}"
+                    data-toggle="modal">RUN</button>`
+    viewTab.innerHTML = runButton;
+    $("#run" + modelNumber).click((event) => runModelView(event));
     // Add viewContent
     let viewContent = document.getElementById("viewContent");
     viewContent.innerHTML = body; // First remove old tabs
@@ -112,7 +115,28 @@ async function buildSimulatorWindow(event) {
     updateSimulationName(0);
     $(".modal").modal("show");
 }
+async function getExecutionResult(modelNumber){
+    const rep = await fetch(_globalVars.executionEndpoint + modelNumber);
+    return await rep.text();
+}
+async function runModelView(event){
+  // button id has format "run{i}" where i is the model number (6th char)
+    let buttonId = event.target.id;
+    let modelNumber = buttonId.substr(3);
 
+   // remove tab panels from view:
+    let viewTab = document.getElementById("viewTab"); // "<div class='loader'></div>";
+
+    viewTab.innerHTML = "<div>executing model... please wait</div>";
+
+    // Add viewContent
+    let viewContent = document.getElementById("viewContent");
+    viewContent.innerHTML = "<div class='loader'></div>";
+
+
+    viewContent.innerHTML = await getExecutionResult(modelNumber);
+
+}
 
 
 /**
