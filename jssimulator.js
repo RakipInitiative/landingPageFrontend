@@ -67,7 +67,7 @@ async function buildSimulatorWindow(event) {
 
     // remove tab panels from view:
     let viewTab = document.getElementById("viewTab"); // "<div class='loader'></div>";
-    let runButton =  `<button type="button" class="btn btn-primary executeButton" id="run${modelNumber}"
+    let runButton =  `<button type="button" class="btn btn-primary runButton" id="run${modelNumber}"
                     data-toggle="modal">RUN</button>`
     viewTab.innerHTML = runButton;
     $("#run" + modelNumber).click((event) => runModelView(event));
@@ -134,8 +134,8 @@ async function runModelView(event){
     viewContent.innerHTML = "<div class='loader'></div>";
 
 
-    viewContent.innerHTML = await getExecutionResult(modelNumber);
-
+    viewContent.innerHTML = await getExecutionResult(modelNumber) ;
+    viewTab.innerHTML = "<div>model executed: </div>";
 }
 
 

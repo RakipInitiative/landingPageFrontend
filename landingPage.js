@@ -206,7 +206,7 @@ async function createUI() {
                 <h4 class="modal-title">Modal title</h4>
               </div>
               <div class="modal-body">
-                <nav class="navbar navbar-default">
+                <nav class="navbar navbar-default" >
                   <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav" id="viewTab"></ul>
                   </div>
