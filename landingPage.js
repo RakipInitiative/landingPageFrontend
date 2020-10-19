@@ -159,27 +159,21 @@ async function createUI() {
           <th class="actives hideColumn" id="col2" scope="col" data-sort="name">ModelID</th>
           <th class="actives" id="colS" data-sort="name">
             <span id="col3">Software</span><br/>
-            <span><select id="soft" class="crit"><option selected="selected">Select</option></select>
-            <button id="clearSoft" title="reset" class="glyphicon glyphicon-remove"></button></span>
+            <span><select id="soft" class="crit"><option selected="selected">Select</option></select><button id="clearSoft" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colE" data-sort="name">
             <span id="col4">Environment</span><br/>
-            <span><select id="env" class="crit"><option selected="selected">Select</option></select>
-            <button id="clearEnv" title="reset" class="glyphicon glyphicon-remove"></button></span>
+            <span><select id="env" class="crit"><option selected="selected">Select</option></select><button id="clearEnv" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colH" data-sort="name">
             <span id="col5">Hazard</span><br/>
             <span>
-              <select id="haz" class="crit"><option selected="selected">Select</option></select>
-              <button id="clearHaz" title="reset" class="glyphicon glyphicon-remove"></button>
-            </span>
+              <select id="haz" class="crit"><option selected="selected">Select</option></select><button id="clearHaz" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colT" data-sort="name">
               <span id="col8">Type</span><br/>
               <span>
-                <select id="type" class="crit"><option selected="selected">Select</option></select>
-                <button id="clearType" title="reset" class="glyphicon glyphicon-remove"></button>
-              </span>
+                <select id="type" class="crit"><option selected="selected">Select</option></select><button id="clearType" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="col6" scope="col" data-sort="name">Execution Time </th>
           <th class="actives" id="col7" scope="col" data-sort="name">Upload Date </th>
@@ -206,7 +200,7 @@ async function createUI() {
                 <h4 class="modal-title">Modal title</h4>
               </div>
               <div class="modal-body">
-                <nav class="navbar navbar-default">
+                <nav class="navbar navbar-default" >
                   <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav" id="viewTab"></ul>
                   </div>
@@ -235,9 +229,14 @@ async function createUI() {
 
     // If browser does not support the input event, then use the keyup event
     let search = $("#filter-search"); // Get the input element
-    search.on(search[0].oninput ? "input" : "keyup", filter);
-
-
+    // search metadata backend
+    search.on('keyup', function (e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            let query = (this.value == undefined || this.value == "") ? "%20"
+            : this.value.trim().toLowerCase(); // Get the query
+            filter(query);
+        }
+    });
 
     // table head
     $("table.sortable thead th").css({
@@ -321,8 +320,6 @@ function createNavBar() {
 
     return navBar
 }
-
-
 
 
 function createTopnav() {
@@ -539,7 +536,6 @@ async function fillTable() {
     });
 }
 
-
 /**
  * Populate the options of a select.
  *
@@ -551,8 +547,6 @@ function populateSelect(select, options) {
     options.forEach(entry =>
         select.innerHTML += `<option value="${entry}">${entry}</option>`);
 }
-
-
 
 // Multiple filtering for every columns
 function filterByCol() {
@@ -681,7 +675,6 @@ function populateSelectById(selectId, options) {
     options.forEach(entry =>
         select.innerHTML += `<option value="${entry}">${entry}</option>`);
 }
-
 
 
 /**
@@ -825,18 +818,18 @@ function getText(element) {
 
     return text;
 }
+async function searchFullMetadata(query){
+    const rep = await fetch(_globalVars.searchEndpoint + query);
+    return await rep.text();
 
-function filter() {
-    let query = this.value == undefined ? "" : this.value.trim().toLowerCase(); // Get the query
+}
+async function filter(query) {
 
-    // TODO: what is p???
-    _cache.forEach(function(p) { // For each entry in cache pass image
-        var index = 0; // Set index to 0
-        if (query) { // If there is some query text
-            index = p.text.indexOf(query); // Find if query text is in there
-        }
+    let searchResults = await searchFullMetadata(query);
 
-        p.element.style.display = index === -1 ? "none" : ""; // Show/Hide
+//    // TODO: what is p???
+    _cache.forEach(function(p) { // For each entry (<tr>) in cache pass image
+        p.element.style.display = searchResults.includes(p.element.id) ? "" : "none"; // Show/Hide
         let numberOfVisibleRows = $("tbody tr:visible").length;
         document.getElementById("numberModels").innerHTML = `Your search returned ${numberOfVisibleRows} models`;
     })
