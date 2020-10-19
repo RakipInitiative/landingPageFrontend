@@ -7,11 +7,11 @@ let _globalVars = {
     uploadDateEndpoint: _endpoint + "uploadDate/",
     executionTimeEndpoint: _endpoint + "executionTime/",
     simulationsEndpoint: _endpoint + "simulations/",
-    executionEndpoint: _endpoint + "execute/"
+    executionEndpoint: _endpoint + "execute/",
+    searchEndpoint: _endpoint + "search/"
 }
 // Regexp to match SId from SBML
 var _idRegexp = /^[A-Za-z_^s]\w*$/;
-
 // simulations of the currently selected model
 let _simulations = [];
 let _selectedSimulationIndex = 0;
