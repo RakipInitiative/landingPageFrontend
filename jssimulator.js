@@ -116,26 +116,28 @@ async function buildSimulatorWindow(event) {
     $(".modal").modal("show");
 }
 async function getExecutionResult(modelNumber){
-    const rep = await fetch(_globalVars.executionEndpoint + modelNumber);
+    const rep = await fetch(_globalVars.executionEndpoint + modelNumber + "?simulationIndex=" + _selectedSimulationIndex);
     return await rep.text();
 }
 async function runModelView(event){
-  // button id has format "run{i}" where i is the model number (6th char)
+  // button id has format "run{i}" where i is the model number (4th char)
     let buttonId = event.target.id;
     let modelNumber = buttonId.substr(3);
 
    // remove tab panels from view:
     let viewTab = document.getElementById("viewTab"); // "<div class='loader'></div>";
 
-    viewTab.innerHTML = "<div>executing model... please wait</div>";
+    viewTab.innerHTML = "<div id='executionMessage'>Executing model... please wait</div>";
 
     // Add viewContent
     let viewContent = document.getElementById("viewContent");
     viewContent.innerHTML = "<div class='loader'></div>";
 
 
-    viewContent.innerHTML = await getExecutionResult(modelNumber) ;
-    viewTab.innerHTML = "<div>model executed: </div>";
+    viewContent.innerHTML = "<div id='plotImage'>" + await getExecutionResult(modelNumber) + "</div>";
+    viewTab.innerHTML = "<div id='executionMessage'>Execution complete!</div>";
+
+
 }
 
 
