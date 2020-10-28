@@ -1,7 +1,7 @@
-let _endpoint = "http://localhost:8080/"; //"https://knime.bfr.berlin/backend/";//
+let _endpoint = "http://localhost:8080/" //"https://knime.bfr.berlin/backend/"//http://localhost:8080/" //"https://knime.bfr.berlin/landingpage/";
 let _globalVars = {
 
-    metadataEndpoint: _endpoint + "metadata",
+    metadataEndpoint: _endpoint + "metadata/",
     imageEndpoint: _endpoint + "image/",
     downloadEndpoint: _endpoint + "download/",
     uploadDateEndpoint: _endpoint + "uploadDate/",
@@ -30,8 +30,8 @@ let _modelTypeSet = new Set();
 let _cache = [];
 
 let _representation = {
-    title1: "Landing Page",
-    link1: "https://knime.bfr.berlin/knime/",
+    title1: "FSK-Web Landing Page",
+    link1: "https://knime.bfr.berlin/knime/#/FSK-Web/7._FSK_Repository_Model_Runner&single&run",
     linkName1: "Web Repository (authentication required)",
     mainColor: "rgb(55,96,146)",
     buttonColor: "rgb(83,121,166)",

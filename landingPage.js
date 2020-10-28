@@ -549,6 +549,7 @@ function populateSelect(select, options) {
 }
 
 // Multiple filtering for every columns
+
 function filterByCol() {
     let filt = "";
     let rows = $("#rows tr");
@@ -820,16 +821,16 @@ function getText(element) {
 }
 async function searchFullMetadata(query){
     const rep = await fetch(_globalVars.searchEndpoint + query);
-    return await rep.text();
+    return await rep.json();
 
 }
 async function filter(query) {
 
-    let searchResults = await searchFullMetadata(query);
+    let searchResults = await searchFullMetadata(query);//JSON.parse(await searchFullMetadata(query));
 
 //    // TODO: what is p???
     _cache.forEach(function(p) { // For each entry (<tr>) in cache pass image
-        p.element.style.display = searchResults.includes(p.element.id) ? "" : "none"; // Show/Hide
+        p.element.style.display = searchResults.includes(parseInt(p.element.id)) ? "" : "none"; // Show/Hide
         let numberOfVisibleRows = $("tbody tr:visible").length;
         document.getElementById("numberModels").innerHTML = `Your search returned ${numberOfVisibleRows} models`;
     })
