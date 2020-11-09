@@ -455,7 +455,7 @@ async function fillTable() {
     populateSelectById("soft", _softwareSet);
     populateSelectById("env", _environmentSet);
     populateSelectById("haz", _hazardSet);
-    populateSelectById("type", _modelTypeSet)
+    populateSelectById("type", _modelTypeSet);
 
     $(document).ready(function() {
 
@@ -475,22 +475,25 @@ async function fillTable() {
             $("#filter-search").val("Search");
             $("#numberModels").fadeOut();
 
+
             // Clear selects
             let softwareSelect = document.getElementById("soft");
-            //softwareSelect.options.length = 1;
-            softwareSelect.value = "Select";
 
             let environmentSelect = document.getElementById("env");
-            //environmentSelect.options.length = 1;
-            environmentSelect.value = "Select";
 
             let hazardSelect = document.getElementById("haz");
-            //hazardSelect.options.length = 1;
-            hazardSelect.value = "Select";
 
             let modelTypeSelect = document.getElementById("type");
-            //modelTypeSelect.options.length = 1;
-            modelTypeSelect.value = "Select";
+
+        softwareSelect.options.length = 1;
+    environmentSelect.options.length = 1;
+     hazardSelect.options.length = 1;
+    modelTypeSelect.options.length = 1;
+
+            populateSelect(softwareSelect, _softwareSet,"Select");
+                populateSelect(environmentSelect, _environmentSet,"Select");
+                populateSelect(hazardSelect, _hazardSet,"Select");
+                populateSelect(modelTypeSelect, _modelTypeSet,"Select");
         });
 
         // Clear the selects of the different filters on button press

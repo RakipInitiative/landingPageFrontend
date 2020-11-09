@@ -1,4 +1,4 @@
-let _endpoint = "https://knime.bfr.berlin/backend/"; //http://localhost:8080/" //"https://knime.bfr.berlin/landingpage/";
+let _endpoint = "https://knime.bfr.berlin/backend/";//http://localhost:8080/" //"https://knime.bfr.berlin/landingpage/";
 let _globalVars = {
 
     metadataEndpoint: _endpoint + "metadata/",
