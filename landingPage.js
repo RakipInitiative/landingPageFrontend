@@ -159,21 +159,21 @@ async function createUI() {
           <th class="actives hideColumn" id="col2" scope="col" data-sort="name">ModelID</th>
           <th class="actives" id="colS" data-sort="name">
             <span id="col3">Software</span><br/>
-            <span><select id="soft" class="crit"><option selected="selected">Select</option></select><button id="clearSoft" title="reset" class="glyphicon glyphicon-remove"></button></span>
+            <span><select id="soft" class="crit"><option >Select</option></select><button id="clearSoft" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colE" data-sort="name">
             <span id="col4">Environment</span><br/>
-            <span><select id="env" class="crit"><option selected="selected">Select</option></select><button id="clearEnv" title="reset" class="glyphicon glyphicon-remove"></button></span>
+            <span><select id="env" class="crit"><option >Select</option></select><button id="clearEnv" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colH" data-sort="name">
             <span id="col5">Hazard</span><br/>
             <span>
-              <select id="haz" class="crit"><option selected="selected">Select</option></select><button id="clearHaz" title="reset" class="glyphicon glyphicon-remove"></button></span>
+              <select id="haz" class="crit"><option >Select</option></select><button id="clearHaz" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="colT" data-sort="name">
               <span id="col8">Type</span><br/>
               <span>
-                <select id="type" class="crit"><option selected="selected">Select</option></select><button id="clearType" title="reset" class="glyphicon glyphicon-remove"></button></span>
+                <select id="type" class="crit"><option >Select</option></select><button id="clearType" title="reset" class="glyphicon glyphicon-remove"></button></span>
           </th>
           <th class="actives" id="col6" scope="col" data-sort="name">Execution Time </th>
           <th class="actives" id="col7" scope="col" data-sort="name">Upload Date </th>
@@ -234,7 +234,9 @@ async function createUI() {
         if (e.key === 'Enter' || e.keyCode === 13) {
             let query = (this.value == undefined || this.value == "") ? "%20"
             : this.value.trim().toLowerCase(); // Get the query
-            filter(query);
+            searchFullMetadata(query);//JSON.parse(await searchFullMetadata(query));
+
+
         }
     });
 
@@ -453,7 +455,7 @@ async function fillTable() {
     populateSelectById("soft", _softwareSet);
     populateSelectById("env", _environmentSet);
     populateSelectById("haz", _hazardSet);
-    populateSelectById("type", _modelTypeSet)
+    populateSelectById("type", _modelTypeSet);
 
     $(document).ready(function() {
 
@@ -473,22 +475,25 @@ async function fillTable() {
             $("#filter-search").val("Search");
             $("#numberModels").fadeOut();
 
+
             // Clear selects
             let softwareSelect = document.getElementById("soft");
-            //softwareSelect.options.length = 1;
-            softwareSelect.value = "Select";
 
             let environmentSelect = document.getElementById("env");
-            //environmentSelect.options.length = 1;
-            environmentSelect.value = "Select";
 
             let hazardSelect = document.getElementById("haz");
-            //hazardSelect.options.length = 1;
-            hazardSelect.value = "Select";
 
             let modelTypeSelect = document.getElementById("type");
-            //modelTypeSelect.options.length = 1;
-            modelTypeSelect.value = "Select";
+
+        softwareSelect.options.length = 1;
+    environmentSelect.options.length = 1;
+     hazardSelect.options.length = 1;
+    modelTypeSelect.options.length = 1;
+
+            populateSelect(softwareSelect, _softwareSet,"Select");
+                populateSelect(environmentSelect, _environmentSet,"Select");
+                populateSelect(hazardSelect, _hazardSet,"Select");
+                populateSelect(modelTypeSelect, _modelTypeSet,"Select");
         });
 
         // Clear the selects of the different filters on button press
@@ -543,108 +548,185 @@ async function fillTable() {
  * @param {array} options Array of possible values
  */
 function populateSelect(select, options) {
-    //select.innerHTML = `<option value="Select">Select</option>`;
+   // select.innerHTML = "";
+   // select.innerHTML = `<option value="Select">Select</option>`;
+
     options.forEach(entry =>
         select.innerHTML += `<option value="${entry}">${entry}</option>`);
 }
 
+
+
+function filterSelectOptions(select, options, pickedSelect){
+
+    options.forEach(entry =>{
+         if( entry.includes(pickedSelect)){
+            select.innerHTML += `<option value="${entry}" selected>${entry}</option>`;
+         } else{
+            select.innerHTML += `<option value="${entry}">${entry}</option>`;
+
+         }
+
+    });
+}
+
+
+
 // Multiple filtering for every columns
 
-function filterByCol() {
-    let filt = "";
-    let rows = $("#rows tr");
-    let select1 = $("#soft").val();
-    let select2 = $("#env").val();
-    let select3 = $("#haz").val();
-    let select4 = $("#type").val();
-    rows.hide();
+async function filterColumns(query){
+    if (query === "?") {
+      query = "";
+    }
+    const rep = await fetch(_globalVars.filterEndpoint + query);
+    return await rep.json();
 
-    let numberModelsDiv = document.getElementById("numberModels");
+}
 
-    if (select1 == "Select" && select2 == "Select" && select3 == "Select" && select4 == "Select") {
-        rows.show();
-        numberModelsDiv.innerHTML = `Your search return ${rows.length} models`;
-    } else if (select2 == "Select") {
-        if (select1 != "Select" && select3 == "Select") {
-            filt = $(`#MainTable td.softCol:contains("${select1}")`).parent();
-        } else if (select1 != "Select" && select3 != "Select") {
-            filt1 = rows.filter($(`#MainTable td.softCol:contains("${select1}")`).parent());
-            let selRows = rows.filter(filt1);
-            filt = selRows.filter($(`#MainTable td.hazCol:contains("${select3}")`).parent().show());
-            rows.hide();
-        } else if (select1 == "Select" && select3 != "Select") {
-            filt = $(`#MainTable td.hazCol:contains("${select3}")`).parent();
-        } else {
-            filt = ""
-        }
-    } else if (select1 == "Select") {
-        if (select2 != "Select" && select3 == "Select") {
-            filt = `:contains("${select2}")`;
-        } else if (select2 != "Select" && select3 != "Select") {
-            filt = `:contains("${select2}"):contains("${select3}")`;
-        } else if (select2 == "Select" && select3 != "Select") {
-            filt = $(`#MainTable td.hazCol:contains("${select3}")`).parent().show();
-        } else {
-            filt = "";
-        }
-    } else if (select3 == "Select") {
-        if (select1 != "Select" && select2 != "Select") {
-            filt1 = rows.filter($(`#MainTable td.softCol:contains("${select1}")`).parent());
-            var selRows = rows.filter(filt1);
-            filt = selRows.filter($(`#MainTable td.envCol:contains("${select2}")`).parent().show());
-            rows.hide();
-        } else {
-            filt = "";
-        }
-    } else {
-        filt = `:contains("${select1}"):contains("${select2}"):contains("${select3}"):contains("${select4}"`;
+
+async function filterByCol() {
+
+    let query = "?";
+
+    //let filt = "";
+
+    let selectSoft = $("#soft").val();
+    let selectEnv = $("#env").val();
+    let selectHaz = $("#haz").val();
+    let selectType = $("#type").val();
+
+    if (selectSoft && selectSoft != "" && selectSoft != "Select") {
+        query += "software=" + selectSoft;
+    }
+    if (selectEnv && selectEnv != "" && selectEnv != "Select") {
+        query += (query === "?") ? "environment=" : "&environment=";
+        query += selectEnv;
+    }
+    if (selectHaz && selectHaz != "" && selectHaz != "Select") {
+        query += (query === "?") ? "hazard=" : "&hazard=";
+        query += selectHaz;
+    }
+    if (selectType && selectType != "" && selectType != "Select") {
+        query += (query === "?") ? "type=" : "&type=";
+        query += selectType;
     }
 
-    rows.filter(filt).show();
-    let searchResult = rows.filter(filt);
-    numberModelsDiv.innerHTML = `Your search returned ${searchResult.length} models`;
+    let filteredRowIDs = await filterColumns(query);
+    //filteredRowIDs = [2,5];
+    filter(filteredRowIDs);
+//
+//    //rows.hide();
+//
+    let numberModelsDiv = document.getElementById("numberModels");
+//
+//    if (select1 == "Select" && select2 == "Select" && select3 == "Select" && select4 == "Select") {
+//        rows.show();
+//        numberModelsDiv.innerHTML = `Your search return ${rows.length} models`;
+//    } else if (select2 == "Select") {
+//        if (select1 != "Select" && select3 == "Select") {
+//            filt = $(`#MainTable td.softCol:contains("${select1}")`).parent();
+//        } else if (select1 != "Select" && select3 != "Select") {
+//            filt1 = rows.filter($(`#MainTable td.softCol:contains("${select1}")`).parent());
+//            let selRows = rows.filter(filt1);
+//            filt = selRows.filter($(`#MainTable td.hazCol:contains("${select3}")`).parent().show());
+//            rows.hide();
+//        } else if (select1 == "Select" && select3 != "Select") {
+//            filt = $(`#MainTable td.hazCol:contains("${select3}")`).parent();
+//        } else {
+//            filt = ""
+//        }
+//    } else if (select1 == "Select") {
+//        if (select2 != "Select" && select3 == "Select") {
+//            filt = `:contains("${select2}")`;
+//        } else if (select2 != "Select" && select3 != "Select") {
+//            filt = `:contains("${select2}"):contains("${select3}")`;
+//        } else if (select2 == "Select" && select3 != "Select") {
+//            filt = $(`#MainTable td.hazCol:contains("${select3}")`).parent().show();
+//        } else {
+//            filt = "";
+//        }
+//    } else if (select3 == "Select") {
+//        if (select1 != "Select" && select2 != "Select") {
+//            filt1 = rows.filter($(`#MainTable td.softCol:contains("${select1}")`).parent());
+//            var selRows = rows.filter(filt1);
+//            filt = selRows.filter($(`#MainTable td.envCol:contains("${select2}")`).parent().show());
+//            rows.hide();
+//        } else {
+//            filt = "";
+//        }
+//    } else {
+//        filt = `:contains("${select1}"):contains("${select2}"):contains("${select3}"):contains("${select4}"`;
+//    }
+
+
+    numberModelsDiv.innerHTML = `Your search returned ${filteredRowIDs.length} models`;
 
     // Get new sets for the filtered rows
     let softwareSet = new Set();
     let environmentSet = new Set();
     let hazardSet = new Set();
     let modelTypeSet = new Set();
+    let rows = $("#rows tr");
 
-    for (let i = 0; i < searchResult.length; i++) {
-        let software = searchResult[i].getElementsByTagName("td")[2].innerText;
-        let environment = searchResult[i].getElementsByTagName("td")[3].innerText;
-        let hazard = searchResult[i].getElementsByTagName("td")[4].innerText;
-        let modelType = searchResult[i].getElementsByTagName("td")[5].innerText;
 
-        // Split some entries joined with commas
-        addUniformElements(software.split(/[,|]/), softwareSet);
-        addUniformElements(environment.split(/[,|]/), environmentSet);
-        addUniformElements(hazard.split(/[,|]/), hazardSet);
-        addUniformElements(modelType.split(/[,|]/), modelTypeSet);
-    }
+
+filteredRowIDs.forEach(id => {
+    if (id >= 18){return}
+     let software = rows[id].getElementsByTagName("td")[2].innerText;
+            let environment = rows[id].getElementsByTagName("td")[3].innerText;
+            let hazard = rows[id].getElementsByTagName("td")[4].innerText;
+            let modelType = rows[id].getElementsByTagName("td")[5].innerText;
+
+            // Split some entries joined with commas
+//            softwareSet.add(software);
+              environmentSet.add(environment);
+//            hazardSet.add(hazard);
+//            modelTypeSet.add(modelType);
+            addUniformElements(software.split(/[,|]/), softwareSet);
+            //addUniformElements(environment.split(/[,|]/), environmentSet);
+            addUniformElements(hazard.split(/[,|]/), hazardSet);
+            //addUniformElements(modelType.split(/[,|]/), modelTypeSet);
+            modelTypeSet.add(modelType);
+    });
+
 
     // Clear filters and populated them with the filtered results
     let softwareSelect = document.getElementById("soft");
-    //softwareSelect.options.length = 1;
-    populateSelect(softwareSelect, softwareSet);
-    softwareSelect.value = select1;
+    if(softwareSelect.selectedOptions[0].value != "Select"){
+        softwareSet.add(softwareSelect.selectedOptions[0].value)
+    }
+    softwareSelect.options.length = 1;
+    filterSelectOptions(softwareSelect, softwareSet, selectSoft);
 
     let environmentSelect = document.getElementById("env");
-    //environmentSelect.options.length = 1;
-    populateSelect(environmentSelect, environmentSet);
-    environmentSelect.value = select2;
+
+    if( environmentSelect.selectedOptions[0].value != "Select"){
+        environmentSet.add(environmentSelect.selectedOptions[0].value)
+    }
+    environmentSelect.options.length = 1;
+    filterSelectOptions(environmentSelect, environmentSet, selectEnv);
 
     let hazardSelect = document.getElementById("haz");
-    //hazardSelect.options.length = 1;
-    populateSelect(hazardSelect, hazardSet);
-    hazardSelect.value = select3;
+    if( hazardSelect.selectedOptions[0].value != "Select"){
+      hazardSet.add(hazardSelect.selectedOptions[0].value)
+    }
+    hazardSelect.options.length = 1;
+    filterSelectOptions(hazardSelect, hazardSet, selectHaz);
+    //hazardSelect.value = selectHaz;
 
     let modelTypeSelect = document.getElementById("type");
-    //modelTypeSelect.options.length = 1;
-    populateSelect(modelTypeSelect, modelTypeSet);
-    modelTypeSelect.value = select4;
+    if( modelTypeSelect.selectedOptions[0].value != "Select"){
+         modelTypeSet.add(modelTypeSelect.selectedOptions[0].value)
+    }
+    modelTypeSelect.options.length = 1;
+    filterSelectOptions(modelTypeSelect, modelTypeSet, selectType);
+    //modelTypeSelect.value = selectType;
     // If no filters, restore the selects and numberModelsDiv
-    if (filt == "") {
+    if (query == "?") {
+    softwareSelect.options.length = 1;
+    environmentSelect.options.length = 1;
+    hazardSelect.options.length = 1;
+      modelTypeSelect.options.length = 1;
         populateSelect(softwareSelect, _softwareSet);
         populateSelect(environmentSelect, _environmentSet);
         populateSelect(hazardSelect, _hazardSet);
@@ -673,6 +755,7 @@ function addUniformElements(uniformedElement, targetSet) {
  */
 function populateSelectById(selectId, options) {
     let select = document.getElementById(selectId);
+    //select.innerHTML = "";
     options.forEach(entry =>
         select.innerHTML += `<option value="${entry}">${entry}</option>`);
 }
@@ -821,16 +904,17 @@ function getText(element) {
 }
 async function searchFullMetadata(query){
     const rep = await fetch(_globalVars.searchEndpoint + query);
-    return await rep.json();
+    filter(await rep.json());
+
 
 }
-async function filter(query) {
+async function filter(filteredRows) {
 
-    let searchResults = await searchFullMetadata(query);//JSON.parse(await searchFullMetadata(query));
+
 
 //    // TODO: what is p???
     _cache.forEach(function(p) { // For each entry (<tr>) in cache pass image
-        p.element.style.display = searchResults.includes(parseInt(p.element.id)) ? "" : "none"; // Show/Hide
+        p.element.style.display = filteredRows.includes(parseInt(p.element.id)) ? "" : "none"; // Show/Hide
         let numberOfVisibleRows = $("tbody tr:visible").length;
         document.getElementById("numberModels").innerHTML = `Your search returned ${numberOfVisibleRows} models`;
     })

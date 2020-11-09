@@ -1,4 +1,4 @@
-let _endpoint = "http://localhost:8080/" //"https://knime.bfr.berlin/backend/"//http://localhost:8080/" //"https://knime.bfr.berlin/landingpage/";
+let _endpoint = "https://knime.bfr.berlin/backend/";//http://localhost:8080/" //"https://knime.bfr.berlin/landingpage/";
 let _globalVars = {
 
     metadataEndpoint: _endpoint + "metadata/",
@@ -8,7 +8,8 @@ let _globalVars = {
     executionTimeEndpoint: _endpoint + "executionTime/",
     simulationsEndpoint: _endpoint + "simulations/",
     executionEndpoint: _endpoint + "execute/",
-    searchEndpoint: _endpoint + "search/"
+    searchEndpoint: _endpoint + "search/",
+    filterEndpoint: _endpoint + "filter"
 }
 // Regexp to match SId from SBML
 var _idRegexp = /^[A-Za-z_^s]\w*$/;
